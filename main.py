@@ -86,8 +86,8 @@ fork_query = """
 
 # Get all the repos
 print("Detecting Repos...")
-repo_query = repo_query.format(org_name,"")
-result = run_query(repo_query) # Execute the query
+this_query = repo_query.format(org_name,"")
+result = run_query(this_query) # Execute the query
 repo_list = []
 for repo in result['organization']['repositories']['edges']:
     repo_list.append(repo['node']['nameWithOwner'])
@@ -97,15 +97,15 @@ hasNextPage = result['organization']['repositories']['pageInfo']['hasNextPage']
 while hasNextPage:
     endCursor = result['organization']['repositories']['pageInfo']['endCursor']
     endCursor_stmt = ', after: "' + endCursor + '"'
-    query = repo_query.format(org_name,endCursor_stmt)
-    result = run_query(query)
+    this_query = repo_query.format(org_name,endCursor_stmt)
+    result = run_query(this_query)
     for repo in result['organization']['repositories']['edges']:
         repo_list.append(repo['node']['nameWithOwner'])
+    hasNextPage = result['organization']['repositories']['pageInfo']['hasNextPage']
 
 print("The Org " + org_name + " has the following repos:")
 print(repo_list)
 print("\n")
-
 
 # Get all members
 print("Checking members...")
@@ -124,11 +124,12 @@ while hasNextPage:
     result = run_query(query)
     for member in result['organization']['membersWithRole']['edges']:
         member_list.append(member['node']['login'])
+    hasNextPage = result['organization']['membersWithRole']['pageInfo']['hasNextPage']
+    
 
 print("The Org " + org_name + " has the following members:")
 print(member_list)
 print("\n")
-
 
 # Get all Fork members
 print("Checking forks...")
@@ -149,6 +150,7 @@ for repo_name in repo_name_list:
         fork_list = result['repository']['forks']['edges']
         for fork in fork_list:
             fork_members_list.append(fork['node']['nameWithOwner'].split('/')[0])
+        hasNextPage = result['repository']['forks']['pageInfo']['hasNextPage']
 
     print("The repo " + repo_name + " has the following fork members that doesn't belong to " + org_name + ":")
 

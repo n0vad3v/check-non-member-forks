@@ -2,7 +2,7 @@
 
 Normally, when you leave an Organization, your forks from the Org private repo will be deleted, while GitHub has made a mistake that the private fork might not be removed.
 
-This script is used to check all the repos for forks made by non-Org members.
+This script is used to check all the repos for forks made by non-Org members, using GitHub's GraphQL API.
 
 ## Usage
 
